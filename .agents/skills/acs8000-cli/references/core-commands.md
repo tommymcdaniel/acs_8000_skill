@@ -30,6 +30,7 @@ For full transcript coverage, open `acs8000-command-reference-transcript.md`.
 - Purpose: add a node.
 - Syntax: `add <Path>`
 - Example: `add network/hosts`
+- After `add`, prompt enters wizard mode with `--:#-`.
 
 ### `cd`
 - Purpose: change level/path.
@@ -93,13 +94,17 @@ For full transcript coverage, open `acs8000-command-reference-transcript.md`.
 - Purpose: undo pending parameter changes.
 - Syntax: `revert`
 
+### `save`
+- Purpose: Use in wizard mode (--:#- prompt) to save changes
+- Syntax: `save` 
+
 ### `scp`
 - Purpose: secure copy between local/remote endpoints.
 - Syntax: `scp [[user@]host1:]file1 [...] [[user@]host2:]file2`
 
 ### `set`
 - Purpose: set parameter value(s).
-- Syntax: `set <Path> <Parameter>=<Value>` (path may be omitted when already in correct node)
+- Syntax: `set <Path> <Parameter>=<Value> [<Parameter>=<Value> ...]` (path may be omitted when already in correct node, multiple parameters can be set on one line)
 - After `set`, prompt usually switches to pending (`**:-`) until `commit` or `revert`.
 
 ### `show`
@@ -129,19 +134,19 @@ For full transcript coverage, open `acs8000-command-reference-transcript.md`.
 
 Power-control operating modes:
 1. At `cd /access`:
-   - control all outlets by target or PDU ID:
-   - `[cycle|on|off] <PDU_ID_or_target_name>`
-2. At `cd /access/<PDU_ID>`:
+   - control all outlets by PDU name:
+   - `[cycle|on|off] <pdu_name>`
+2. At `cd /access/<pdu_name>`:
    - control specific outlet(s):
-   - single outlet: `[cycle|on|off] <outlet>`
-   - range: `[cycle|on|off] <start>-<end>`
-   - list: `[cycle|on|off] <a>,<b>,<c>`
-3. At `cd /power_management/pdus/<PDU_ID>/outlets`:
+   - single outlet: `[cycle|on|off] <outlet_number>`
+   - range: `[cycle|on|off] <start_outlet_number>-<end_outlet_number>`
+   - list: `[cycle|on|off] <outlet_number>,<outlet_number>,...`
+3. At `cd /power_management/pdus/<pdu_name>/outlets`:
    - same outlet targeting model, plus lock/unlock where supported.
 
 ## 3) Special multi-session commands (section 2.2)
 Prerequisite: navigate to enabled configured serial port node:
-- `cd /access/<serial_port_ID>`
+- `cd /access/<port_name>`
 
 ### `sniff`
 - Attach as additional view-only user.
@@ -194,7 +199,7 @@ Guide example: toggling IPv6 with equivalent CLI actions:
 
 ### Connect to serial console
 1. `cd /access`
-2. `connect <serial_port_name>`
+2. `connect <port_name>`
 3. enter password if prompted
 4. use `Ctrl+z` to suspend session back to CLI
 
@@ -212,13 +217,33 @@ Guide example: toggling IPv6 with equivalent CLI actions:
   2. `show`
   3. `set status=enabled`
   4. `show`
-  5. `save` / `commit`
+  5. `save`
 - Power profile:
   1. `set_power ports/serial_ports/ <port_number>`
   2. `show`
   3. `set status=enabled`
-  4. `save` / `commit`
+  4. `save`
   5. `show`
+- set_dial-in / set_dial-out
+  1. set_dial-in ports/serial_ports/ <port_number>
+  or set_dial-out ports/serial_ports/ <port_number>
+- set_socket-client
+  1. set_socket-client ports/serial_ports/ <port_number>
+- clone_ports - Copy Configuration
+  1. clone_ports <source_port_number>
+  2. set copy_configuration_to=<target_port_numbers>
+  3. save
+  Example:
+     clone_ports 5
+     set copy_configuration_to=10,15
+     save
+- enable_ports / disable_ports
+  1. enable_ports <port_numbers>
+  or disable_ports <port_numbers>
+  Example:
+     enable_ports 1,2,3
+- reset_port_to_factory
+  1. reset_port_to_factory <port_numbers>
 
 ## 6) Administrator CLI map (section 4)
 Use this section as a quick map; for full parameter trees use transcript pages in section 4.
@@ -232,6 +257,7 @@ Use this section as a quick map; for full parameter trees use transcript pages i
 - Common flows:
   - static addressing under `/network/devices/<eth0|eth1>/settings`
   - host table add/edit under `/network/hosts`
+  - parameter update using `commit`
 
 ### `/sensors`
 - Appliance internal temperature/voltage and other sensor families.
@@ -249,6 +275,7 @@ Use this section as a quick map; for full parameter trees use transcript pages i
   - `reset_port_to_factory`
   - `enable_ports`
   - `disable_ports`
+- parameter update using `save`
 
 ### `/pluggable_devices`
 - Discover/configure detected pluggable devices (for supported and enabled scenarios).
@@ -257,12 +284,21 @@ Use this section as a quick map; for full parameter trees use transcript pages i
 - `appliance_authentication` and `authentication_servers` families.
 - Server types shown include radius, tacacs+, ldap(s)/ad, kerberos, dsview.
 
-### `/users`
-- Local accounts, groups, login profiles, per-user access rights, password rules.
+### `/users/local_accounts`
+- Local accounts, password rules
 - Canonical add-user flow from guide:
   - `cd users/local_accounts/user_names`
   - `add`
   - `set user_name=<...> password=<...> confirm_password=<...>`
+  - `save`
+  - `show`
+
+### `/users/authorization`
+- Groups, login profiles, per-user access rights.
+- Canonical add-user flow from guide:
+  - `cd users/authorization/groups/<group_name>/members`
+  - `add`
+  - `set local_users=<...>`
   - `save`
   - `show`
 
@@ -281,6 +317,18 @@ Use this section as a quick map; for full parameter trees use transcript pages i
 - self-service password update node.
 - Guide syntax style:
   - `set old_password=<...> new_password=<...> confirm_password=<...>`
+
+## System Tools Commands (from /system_tools)
+
+| Command | Description |
+|---------|-------------|
+| `reboot` | Reboot the appliance |
+| `shutdown` | Shutdown the appliance |
+| `factory_defaults` | Reset to factory defaults |
+| `save_configuration` | Backup configuration |
+| `restore_configuration` | Restore configuration |
+| `upgrade_firmware` | Upgrade firmware |
+| `generate_|_download_certificate` | SSL certificate management |
 
 ## 7) Appendix-level operational edge cases
 ### Appendix A: recovery when flash does not boot
