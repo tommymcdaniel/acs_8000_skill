@@ -18,10 +18,9 @@ Command Reference Guide
 ## Page 2
 Vertiv™ | Avocent® ACS800/8000 Advanced Console System Command Reference Guide
 Technical Support Site
-If you encounter any installation or operational issues with your product, check the pertinent section of this
-manual to see if the issue can be resolved by following outlined procedures.
-Visit https://www.VertivCo.com/en-
-us/support/ for additional assistance.
+If you encounter any installation or operational issues with your product, check the pertinent section of this manual to see if the issue can be resolved by following outlined procedures.
+Visit https://www.VertivCo.com/en-us/support/ for additional assistance.
+
 The information contained in this document is subject to change without notice
 and may not be suitable for all applications. While every precaution has been
 taken to ensure the accuracy and completeness of this document, Vertiv
@@ -183,20 +182,27 @@ for that level are listed. Different options appear for administrators and for a
 • When an administrator types the cd command and then presses Tab Tab at the / prompt, the following
 navigation options (path elements) appear.
 --:-/ cli->cd
-access/ monitoring/ sensors/
-active_sessions/ network/ system/
-authentication/ pluggable_
-devices/
-system_
-tools/
-change_password/ ports/ users/
-events_and_logs/ power_
-management
+access/ 
+monitoring/ 
+sensors/
+active_sessions/ 
+network/ 
+system/
+authentication/ 
+pluggable_devices/
+system_tools/
+change_password/ 
+ports/ 
+users/
+events_and_logs/ 
+power_management/
+
 When a regular user types the cd command and then presses Tab Tab at the / prompt, the following navigation options
 appear.
 --:-/ cli->cd
-access/ change_password/ power_management/
-Vertiv™ | Avocent® ACS800/8000 Advanced Console System Command Reference Guide2
+access/ 
+change_password/ 
+power_management/
 
 ## Page 7
 Enter cd <one_or_more_path_elements> to move down one or more levels of the navigation tree:
@@ -209,8 +215,7 @@ At any level, you can press Tab Tab at the prompt to see the commands that can b
 add pwd
 cd quit
 clone_ports reboot
-commit reset_port_to_
-factory
+commit reset_port_to_factory
 configuration_integrity restore_
 configuration
 delete revert
@@ -478,20 +483,20 @@ with merged outlets):
 2 CLI Command Set 11
 
 ## Page 16
---:- access cli->[cycle|on|off][<PDU_ID>]|<target name>]
+--:- access cli->[cycle|on|off][<pdu_name>]|<target name>]
 To power control (on, off, cycle) outlets of one specific PDU:
 1. Go to the PDU level under access.
---:- / cli-> cd access/<PDU_ID>
-2. Launch the power command with a specific outlet (number or name), range of outlets (use a hyphen to specify
-the range) or list of outlets (number or name separated by a comma).
---:- <PDU_ID> cli-> [cycle|on|off][<outlet name>|<outlet number>]
+--:- / cli-> cd access/<pdu_name>
+2. Launch the power command with a specific outlet number, range of outlets (use a hyphen to specify
+the range) or list of outlets (number separated by a comma).
+--:- <pdu_name> cli-> [cycle|on|off][<outlet number>]
 -or-
---:- <PDU_ID> cli-> [cycle|on|off]<outlet number>-<outlet number]
+--:- <pdu_name> cli-> [cycle|on|off]<outlet number>-<outlet number>
 -or-
---:- <PDU_ID> cli-> [cycle|on|off]<outlet number>,<outlet number>
+--:- <pdu_name> cli-> [cycle|on|off]<outlet number>,<outlet number>
 To power control (on, off, cycle, lock, unlock) outlets of one specific PDU under the power management level:
 1. Go to the outlet level for the specific PDU.
---:- / cli-> cd power_management/pdus/<PDU_ID>/outlets
+--:- / cli-> cd power_management/pdus/<pdu_name>/outlets
 2. Launch the power command with a specific outlet number, range of outlets (use a hyphen to specify the range)
 or list of outlets (number or name separated by a comma).
 --:- outlets cli-> [cycle|on|off] [<outlet number>]
@@ -505,7 +510,7 @@ Vertiv™ | Avocent® ACS800/8000 Advanced Console System Command Reference Guid
 2.2 Special Multi-session Commands
 The following commands require navigation to an enabled and configured port to which one or more users are
 simultaneously connected. To get to the port, enter the following command.
---:- / cli-> cd access/<serial_port_ID>
+--:- / cli-> cd access/<port_name>
 2.2.1 sniff
 Connect to a serial port as an additional, view-only user.
 Syntax:
@@ -534,23 +539,23 @@ Ctrl + z
 2.2.3 list_shared_session
 List the users connected to the shared serial port.
 Syntax:
---:- <serial_port_ID> cli-> list_shared_session
+--:- <port_name> cli-> list_shared_session
 2.2.4 kill_shared_session
 Terminate the connection of a user on the port. The user is returned to the cli-> prompt.
 NOTE: You must enable the Kill Multi Session option from the Port Access Rights settings for this command to be
 available.
 Syntax:
---:- <serial_port_ID> cli-> kill_shared_session <username>
+--:- <port_name> cli-> kill_shared_session <username>
 Example:
---:- <serial_port_ID> cli-> kill_shared_session admin@139
+--:- <port_name> cli-> kill_shared_session admin@139
 2.2.5 sendmsg
 Send a message to a user connected to the port.
 NOTE: You must enable the Send Message Multi Session option from the Port Access Rights settings for this
 command to be available.
 Syntax:
---:- <serial_port_ID> cli-> sendmsg <username> <message>
+--:- <port_name> cli-> sendmsg <username> <message>
 Example:
---:- <serial_port_ID> cli-> sendmsg admin@139 You are being terminated.
+--:- <port_name> cli-> sendmsg admin@139 You are being terminated.
 2.2.6 show_databuf and show_appliance_databuf
 View the data buffer files for the port. Data buffering must be enabled in the CAS Profile for the port and the user must be
 authorized for data buffer management.
@@ -558,7 +563,7 @@ Syntax:
 Vertiv™ | Avocent® ACS800/8000 Advanced Console System Command Reference Guide14
 
 ## Page 19
---:- <serial_port_ID> cli-> show_databuf
+--:- <port_name> cli-> show_databuf
 View the data logging for the appliance. Appliance Session Data logging must be enabled in Events and Logs/Appliance
 Logging.
 Syntax:
@@ -575,7 +580,7 @@ The following commands are available for show data buffering:
 Clear the data buffer. Data buffering must be enabled in the CAS Profile for the port and the user must be authorized for
 data buffer management.
 Syntax:
---:- <serial_port_ID> cli-> clean_databuf
+--:- <port_name> cli-> clean_databuf
 Clear the data logging for the appliance. Appliance Session Data logging must be enabled in Events and Logs/Appliance
 Logging.
 Syntax:
@@ -654,7 +659,7 @@ performed in the CLI.
 TASK WHERE PERFORMED
 View information about the console system and the connected devices access show
 Authorized users access enabled on configured ports access connect
-Authorized users manage power on outlets access/<PDU_ID>/outlets -or- power_management/PDUs/<PDU_ID>/outlet_table
+Authorized users manage power on outlets access/<pdu_name>/outlets -or- power_management/PDUs/<pdu_name>/outlet_table
 Administrators configure ports connected to the consoles of devices ports See Chapter 3 for all Ports options
 Table 3.1 Port Access and Configuration Tasks
 3.1 View Information About the Console System and Connected Devices
@@ -677,13 +682,13 @@ Port Number of the serial port
 Type Serial
 Status Idle / In-Use
 For Power
-Name PDU ID (either the default name in the formatXX-XX-XXPXX_n or an administrator-assigned alias, such as myPDU)
+Name PDU ID (either the default name in the format XX-XX-XXPXX_n or an administrator-assigned alias, such as myPDU)
 Port Number of the serial port/position on the chain
 Type PDU model
 Status Number of Outlets ON | Total outlets
 For
 Outlets
-Entercd <PDU_ID>/outlets and entershowto see list of outlets and the actions that can be taken (commands that can be executed) for each
+Entercd <pdu_name>/outlets and entershowto see list of outlets and the actions that can be taken (commands that can be executed) for each
 outlet as shown below.
 Name Either the defaultXX-XX-XXPXX_n_n or an administrator-assigned name
 Port PDU outlet number
@@ -720,7 +725,7 @@ Examples on page 22.
 1. Log into the CLI and enter cd access to navigate to the Access level.
 --:- / cli-> cd access
 --:- access cli->
-2. Enter connect <serial_port_name >. If authentication is configured for the port, the Password prompt appears
+2. Enter connect <port_name>. If authentication is configured for the port, the Password prompt appears
 when single sign-on is disabled.
 --:- access cli-> connect 77-77-70-p-2
 Password:
@@ -1632,8 +1637,8 @@ To rename a PDU:
 1. Log onto the CLI as an administrator and enter cd power_management/pdus to navigate to the pdus level.
 --:- / cli-> cd power_management/pdus
 2. Type rename and press Tab Tab to expand the parameters.
---:- pdus cli-> rename <PDU_ID>
-3. Enter setnewpdu_id=<new_PDU_ID>.
+--:- pdus cli-> rename <pdu_name>
+3. Enter set newpdu_id=<new_pdu_name>.
 --:#- [pdus] cli-> set new_pdu_id=mypdu
 --:#- [pdus] save
 NOTE: See the Avocent® ACS800/8000 Advanced Console System Installation/User guide for how to perform other
